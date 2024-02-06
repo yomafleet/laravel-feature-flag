@@ -5,7 +5,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Yomafleet\\LaravelFeatureFlag\\": "src/"
+      "Yomafleet\\FeatureFlag\\": "src/"
     }
   },
   "authors": [
@@ -14,9 +14,31 @@
       "email": "aungchitmin@yomafleet.com"
     }
   ],
-  "minimum-stability": "dev",
   "require": {
     "php": "^8.0",
-    "illuminate/support": "^8.0"
+    "illuminate/support": "^8.0",
+    "unleash/client": "^2.3",
+    "symfony/http-client": "^6.2",
+    "cache/filesystem-adapter": "^1.2",
+    "flipt-io/flipt": "^1.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Yomafleet\\FeatureFlag\\ServiceProvider"
+      ],
+      "aliases": {
+        "Debugbar": "Yomafleet\\FeatureFlag\\Facade"
+      }
+    }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.0",
+    "phpunit/phpunit": "^8.5.8|^9.3.3"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   }
 }
