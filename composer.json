@@ -1,0 +1,22 @@
+{
+  "name": "yomafleet/laravel-feature-flag",
+  "description": "Internal feature flag tool based on Unleash",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Yomafleet\\LaravelFeatureFlag\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "aungchitminn",
+      "email": "aungchitmin@yomafleet.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^8.0",
+    "illuminate/support": "^8.0"
+  }
+}
