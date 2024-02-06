@@ -12,9 +12,17 @@ interface UserContract
     public function id(): string|int;
 
     /**
-     * Get roles of the user.
+     * Get all roles of the user.
      *
      * @return array
      */
     public function roles(): array;
+
+    /**
+     * Check if the user has given role.
+     *
+     * @param string $name
+     * @return boolean
+     */
+    public function hasRole(string $name): bool;
 }
