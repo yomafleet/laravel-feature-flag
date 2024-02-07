@@ -5,7 +5,8 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Yomafleet\\FeatureFlag\\": "src/"
+      "Yomafleet\\FeatureFlag\\": "src/",
+      "Yomafleet\\FeatureFlag\\Tests\\": "tests"
     }
   },
   "authors": [
@@ -32,13 +33,14 @@
       }
     }
   },
-  "require-dev": {
-    "orchestra/testbench": "^6.0",
-    "phpunit/phpunit": "^8.5.8|^9.3.3"
-  },
   "config": {
     "allow-plugins": {
       "php-http/discovery": true
     }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.42",
+    "phpunit/phpunit": "^9.6",
+    "dg/bypass-finals": "^1.5"
   }
 }

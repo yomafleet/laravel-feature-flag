@@ -6,17 +6,24 @@ use Flipt\Client\FliptClient;
 use Yomafleet\FeatureFlag\UserContract;
 use Flipt\Client\AuthenticationStrategy;
 use Flipt\Client\ClientTokenAuthentication;
+use Yomafleet\FeatureFlag\Exceptions\UserNotProvidedException;
 use Yomafleet\FeatureFlag\FlaggableContract;
 
 class Flipt implements FlaggableContract
 {
     protected FliptClient $client;
-    protected ?UserContract $user;
+    protected UserContract $user;
 
-    public function __construct(?UserContract $user = null)
+    public function __construct(?UserContract $user = null, ?FliptClient $client = null)
     {
+        $user = $user ?? auth()->user();
+
+        if (!$user) {
+            throw new UserNotProvidedException();
+        }
+
         $this->user = $user;
-        $this->client = $this->buildClient();
+        $this->client = $client ?? $this->buildClient();
     }
 
     /**
@@ -31,7 +38,7 @@ class Flipt implements FlaggableContract
             $config['host'],
             $config['namespace'],
             $this->userContext(),
-            $this->getUser()->id,
+            $this->getUser()->id(),
             $config['token'] ? $this->useAuth($config['token']) : null
         );
 
@@ -76,8 +83,7 @@ class Flipt implements FlaggableContract
      */
     protected function getUser(): UserContract
     {
-        /** @var UserContract $user */
-        return $this->user === null || !$this->user->id() ? auth()->user() : $this->user;
+        return $this->user;
     }
 
     /** @inheritDoc */
