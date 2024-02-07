@@ -2,6 +2,8 @@
 
 namespace Yomafleet\FeatureFlag;
 
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider as BaseProvider;
 
 class ServiceProvider extends BaseProvider
@@ -20,6 +22,18 @@ class ServiceProvider extends BaseProvider
         $this->publishes([$source => config_path('feature-flags.php')]);
 
         $this->mergeConfigFrom($source, 'feature-flags');
+
+        Blade::if('feature', function ($name) {
+            return Facade::enabled($name);
+        });
+
+        /** @var \Illuminate\Routing\Router $router */
+        $router = $this->app['router'];
+        $router->aliasMiddleware('feature', Middleware::class);
+        Route::macro('feature', function ($name) {
+            /** @var \Illuminate\Routing\Route $this */
+            return $this->middleware("feature:{$name}");
+        });
     }
 
     /**
@@ -29,7 +43,7 @@ class ServiceProvider extends BaseProvider
      */
     public function register()
     {
-        $this->app->bind('feature-toggler', function ($app) {
+        $this->app->singleton('feature-toggler', function ($app) {
             return Factory::make();
         });
     }
