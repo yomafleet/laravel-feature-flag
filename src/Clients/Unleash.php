@@ -87,7 +87,7 @@ class Unleash implements FlaggableContract
 
     protected static function getCache(): CacheInterface
     {
-        $cache = cache()->store();
+        $cache = cache()?->store() ?? null;
 
         if ($cache instanceof CacheInterface) {
             return $cache;

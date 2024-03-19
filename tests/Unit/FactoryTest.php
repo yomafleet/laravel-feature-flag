@@ -2,6 +2,7 @@
 
 namespace Yomafleet\FeatureFlag\Tests\Unit;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Yomafleet\FeatureFlag\Clients\DisabledToggler;
 use Yomafleet\FeatureFlag\Clients\Flipt;
@@ -9,6 +10,7 @@ use Yomafleet\FeatureFlag\Clients\Unleash;
 use Yomafleet\FeatureFlag\Exceptions\UserNotProvidedException;
 use Yomafleet\FeatureFlag\Facade;
 use Yomafleet\FeatureFlag\Factory;
+use Yomafleet\FeatureFlag\Middleware;
 use Yomafleet\FeatureFlag\Tests\TestCase;
 
 class FactoryTest extends TestCase
@@ -58,5 +60,25 @@ class FactoryTest extends TestCase
         $isEnabled = Facade::enabled('something');
 
         $this->assertTrue($isEnabled);
+    }
+
+    public function test_works_via_middleware_success()
+    {
+        Config::set('feature-flags.default', 'disabled-toggler');
+        Config::set('feature-flags.providers.disabled-toggler.optimistic', true);
+
+        $middleware = new Middleware();
+        $enabled = $middleware->handle(new Request(), fn ($req) => true, 'testing');
+        $this->assertTrue($enabled);
+    }
+
+    public function test_works_via_middleware_fail()
+    {
+        $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+
+        Config::set('feature-flags.default', 'disabled-toggler');
+        Config::set('feature-flags.providers.disabled-toggler.optimistic', false);
+        $middleware = new Middleware();
+        $middleware->handle(new Request(), fn ($req) => true, 'testing');
     }
 }
