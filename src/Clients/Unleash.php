@@ -3,9 +3,9 @@
 namespace Yomafleet\FeatureFlag\Clients;
 
 use League\Flysystem\Filesystem;
-
 use Unleash\Client\UnleashBuilder;
 use League\Flysystem\Adapter\Local;
+use Psr\SimpleCache\CacheInterface;
 use Unleash\Client\Unleash as Client;
 use Yomafleet\FeatureFlag\UserContract;
 use Unleash\Client\Configuration\Context;
@@ -47,9 +47,7 @@ class Unleash implements FlaggableContract
             ->withInstanceId($config['id'])
             ->withHeader('Authorization', $config['token'])
             ->withContextProvider($this->userContextProvider())
-            ->withCacheHandler(new FilesystemCachePool(
-                new Filesystem(new Local(storage_path('framework/cache'))),
-            ), 30)
+            ->withCacheHandler(static::getCache(), 30)
             ->build();
     }
 
@@ -76,13 +74,28 @@ class Unleash implements FlaggableContract
         $context = $this->userContext();
 
         return new class ($context) implements UnleashContextProvider {
-            public function __construct(protected Context $context) {}
+            public function __construct(protected Context $context)
+            {
+            }
 
             public function getContext(): Context
             {
                 return $this->context;
             }
         };
+    }
+
+    protected static function getCache(): CacheInterface
+    {
+        $cache = cache()->store();
+
+        if ($cache instanceof CacheInterface) {
+            return $cache;
+        }
+
+        return new FilesystemCachePool(
+            new Filesystem(new Local(storage_path('framework/cache'))),
+        );
     }
 
     /** @inheritDoc */
