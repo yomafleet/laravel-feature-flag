@@ -1,0 +1,46 @@
+{
+  "name": "yomafleet/laravel-feature-flag",
+  "description": "Internal feature flag tool based on Unleash",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Yomafleet\\FeatureFlag\\": "src/",
+      "Yomafleet\\FeatureFlag\\Tests\\": "tests"
+    }
+  },
+  "authors": [
+    {
+      "name": "aungchitminn",
+      "email": "aungchitmin@yomafleet.com"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "illuminate/support": "^8.0",
+    "unleash/client": "^2.3",
+    "symfony/http-client": "^6.2",
+    "cache/filesystem-adapter": "^1.2",
+    "flipt-io/flipt": "^1.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Yomafleet\\FeatureFlag\\ServiceProvider"
+      ],
+      "aliases": {
+        "Debugbar": "Yomafleet\\FeatureFlag\\Facade"
+      }
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.42",
+    "phpunit/phpunit": "^9.6",
+    "dg/bypass-finals": "^1.5"
+  }
+}
