@@ -1,6 +1,6 @@
 <?php
 
-namespace Yomafleet\FeatureFlag\Tests\Clients;
+namespace Yomafleet\FeatureFlag\Tests\Unit\Clients;
 
 use Illuminate\Support\Facades\Config;
 use Yomafleet\FeatureFlag\Factory;

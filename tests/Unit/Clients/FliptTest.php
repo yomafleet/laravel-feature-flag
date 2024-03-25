@@ -1,6 +1,6 @@
 <?php
 
-namespace Yomafleet\FeatureFlag\Tests\Clients;
+namespace Yomafleet\FeatureFlag\Tests\Unit\Clients;
 
 use Mockery;
 use Flipt\Client\FliptClient;
