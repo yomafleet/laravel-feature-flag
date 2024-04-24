@@ -59,8 +59,8 @@ class Unleash implements FlaggableContract
     protected function userContext(): Context
     {
         return new UnleashContext(
-            currentUserId: $this->user->id(),
-            customContext: ['roles' => implode(',', $this->user->roles())]
+            currentUserId: $this->user->idKey(),
+            customContext: ['roles' => implode(',', $this->user->roleList())]
         );
     }
 
