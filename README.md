@@ -78,7 +78,7 @@ class User extends Authenticatable implements UserContract
      *
      * @return string|integer
      */
-    public function id(): string|int
+    public function idKey(): string|int
     {
         return $this->id;
     }
@@ -88,7 +88,7 @@ class User extends Authenticatable implements UserContract
      *
      * @return array
      */
-    public function roles(): array
+    public function roleList(): array
     {
         return $this->roles->toArray();
     }
@@ -99,9 +99,9 @@ class User extends Authenticatable implements UserContract
      * @param string $name
      * @return boolean
      */
-    public function hasRole(string $name): bool
+    public function hasRoleAssigned(string $name): bool
     {
-        return $this->hasRole($name);
+        return $this->hasRoleAssigned($name);
     }
 }
 ```

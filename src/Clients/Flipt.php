@@ -38,7 +38,7 @@ class Flipt implements FlaggableContract
             $config['host'],
             $config['namespace'],
             $this->userContext(),
-            $this->getUser()->id(),
+            $this->getUser()->idKey(),
             $config['token'] ? $this->useAuth($config['token']) : null
         );
 
@@ -72,7 +72,7 @@ class Flipt implements FlaggableContract
     protected function userContext(): array
     {
         return [
-            'admin' => $this->getUser()->hasRole('admin')
+            'admin' => $this->getUser()->hasRoleAssigned('admin')
         ];
     }
 
@@ -95,7 +95,7 @@ class Flipt implements FlaggableContract
         //     $response->getEnabled(),
         //     $response->getReason(),
         //     $response->getRequestDurationMillis(),
-        //     $response->getRequestId(),
+        //     $response->getRequestidKey(),
         //     $response->getTimestamp(),
         // ]);
 

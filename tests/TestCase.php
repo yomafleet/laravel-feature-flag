@@ -57,16 +57,18 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     {
         Auth::shouldReceive('user')->andReturn(
             new class ($attr) implements UserContract {
-                public function __construct(protected array $attr) {}
-                public function id(): string|int
+                public function __construct(protected array $attr)
+                {
+                }
+                public function idKey(): string|int
                 {
                     return $this->attr['id'] ?? 1;
                 }
-                public function roles(): array
+                public function roleList(): array
                 {
                     return $this->attr['roles'] ?? [];
                 }
-                public function hasRole(string $name): bool
+                public function hasRoleAssigned(string $name): bool
                 {
                     return $this->attr['hasRole'] ?? false;
                 }
