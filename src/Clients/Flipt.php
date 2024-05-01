@@ -11,7 +11,7 @@ use Yomafleet\FeatureFlag\FlaggableContract;
 
 class Flipt implements FlaggableContract
 {
-    protected FliptClient $client;
+    protected ?FliptClient $client;
     protected ?UserContract $user;
 
     public function __construct(?UserContract $user = null, ?FliptClient $client = null)
