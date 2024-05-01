@@ -17,34 +17,36 @@ class Flipt implements FlaggableContract
     public function __construct(?UserContract $user = null, ?FliptClient $client = null)
     {
         $this->user = $user ?? auth()->user();
-        $this->client = $client ?? $this->buildClient();
+        $this->client = $client;
     }
 
     /**
      * Build Flipt client.
      *
-     * @return FliptClient
+     * @return void
      */
-    protected function buildClient(): FliptClient
+    protected function ensureClient()
     {
-        $config = config('feature-flags.providers.flipt');
-        $client = new FliptClient(
-            $config['host'],
-            $config['namespace'],
-            $this->userContext(),
-            $this->getUser()->idKey(),
-            $config['token'] ? $this->useAuth($config['token']) : null
-        );
+        if (!$this->client) {
+            $config = config('feature-flags.providers.flipt');
+            $client = new FliptClient(
+                $config['host'],
+                $config['namespace'],
+                $this->userContext(),
+                $this->getUser()->idKey(),
+                $config['token'] ? $this->useAuth($config['token']) : null
+            );
 
-        /**
-         * Fix for the client referencing non-existed property
-         *
-         * @disregard P1009 Undefined type
-         * @see \Flipt\Client\FliptClient::mergeRequestParams
-         */
-        $client->reference = '';
+            /**
+             * Fix for the client referencing non-existed property
+             *
+             * @disregard P1009 Undefined type
+             * @see \Flipt\Client\FliptClient::mergeRequestParams
+             */
+            $client->reference = '';
 
-        return $client;
+            $this->client = $client;
+        }
     }
 
     /**
@@ -101,6 +103,8 @@ class Flipt implements FlaggableContract
     /** @inheritDoc */
     public function enabled(string $key): bool
     {
+        $this->ensureClient();
+
         $response = $this->client->boolean($key);
         // logger('flipt response', [
         //     $response->getFlagKey(),

@@ -24,25 +24,27 @@ class Unleash implements FlaggableContract
     public function __construct(?UserContract $user = null, ?Client $client = null)
     {
         $this->user = $user ?? auth()->user();
-        $this->client = $client ?? $this->buildClient();
+        $this->client = $client;
     }
 
     /**
      * Build unleash client.
      *
-     * @return Client
+     * @return void
      */
-    protected function buildClient(): Client
+    protected function ensureClient()
     {
-        $config = config('feature-flags.providers.unleash');
-        return UnleashBuilder::create()
-            ->withAppName($config['name'])
-            ->withAppUrl($config['url'])
-            ->withInstanceId($config['id'])
-            ->withHeader('Authorization', $config['token'])
-            ->withContextProvider($this->userContextProvider())
-            ->withCacheHandler(static::getCache(), 30)
-            ->build();
+        if (!$this->client) {
+            $config = config('feature-flags.providers.unleash');
+            $this->client = UnleashBuilder::create()
+                ->withAppName($config['name'])
+                ->withAppUrl($config['url'])
+                ->withInstanceId($config['id'])
+                ->withHeader('Authorization', $config['token'])
+                ->withContextProvider($this->userContextProvider())
+                ->withCacheHandler(static::getCache(), 30)
+                ->build();
+        }
     }
 
     /**
@@ -126,6 +128,8 @@ class Unleash implements FlaggableContract
     /** @inheritDoc */
     public function enabled(string $key): bool
     {
+        $this->ensureClient();
+
         return $this->client->isEnabled($key);
     }
 
