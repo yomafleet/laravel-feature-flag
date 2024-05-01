@@ -18,7 +18,7 @@ use Yomafleet\FeatureFlag\Exceptions\UserNotProvidedException;
 /** @mixin \Unleash\Client\Unleash */
 class Unleash implements FlaggableContract
 {
-    protected Client $client;
+    protected ?Client $client;
     protected ?UserContract $user;
 
     public function __construct(?UserContract $user = null, ?Client $client = null)
