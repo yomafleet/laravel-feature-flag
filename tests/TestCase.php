@@ -55,24 +55,33 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function mockAuthUser(array $attr = [])
     {
-        Auth::shouldReceive('user')->andReturn(
-            new class ($attr) implements UserContract {
-                public function __construct(protected array $attr)
-                {
-                }
-                public function idKey(): string|int
-                {
-                    return $this->attr['id'] ?? 1;
-                }
-                public function roleList(): array
-                {
-                    return $this->attr['roles'] ?? [];
-                }
-                public function hasRoleAssigned(string $name): bool
-                {
-                    return $this->attr['hasRole'] ?? false;
-                }
+        Auth::shouldReceive('user')->andReturn($this->mockUser($attr));
+    }
+
+    /**
+     * Mock user
+     *
+     * @param array $attr
+     * @return UserContract
+     */
+    protected function mockUser(array $attr = [])
+    {
+        return new class ($attr) implements UserContract {
+            public function __construct(protected array $attr)
+            {
             }
-        );
+            public function idKey(): string|int
+            {
+                return $this->attr['id'] ?? 1;
+            }
+            public function roleList(): array
+            {
+                return $this->attr['roles'] ?? [];
+            }
+            public function hasRoleAssigned(string $name): bool
+            {
+                return $this->attr['hasRole'] ?? false;
+            }
+        };
     }
 }

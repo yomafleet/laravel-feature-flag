@@ -12,17 +12,11 @@ use Yomafleet\FeatureFlag\FlaggableContract;
 class Flipt implements FlaggableContract
 {
     protected FliptClient $client;
-    protected UserContract $user;
+    protected ?UserContract $user;
 
     public function __construct(?UserContract $user = null, ?FliptClient $client = null)
     {
-        $user = $user ?? auth()->user();
-
-        if (!$user) {
-            throw new UserNotProvidedException();
-        }
-
-        $this->user = $user;
+        $this->user = $user ?? auth()->user();
         $this->client = $client ?? $this->buildClient();
     }
 
@@ -77,12 +71,30 @@ class Flipt implements FlaggableContract
     }
 
     /**
+     * Sets the user.
+     *
+     * @param UserContract $user
+     * @return static
+     */
+    public function setUser(UserContract $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * User provider.
      *
+     * @throws UserNotProvidedException
      * @return UserContract
      */
-    protected function getUser(): UserContract
+    public function getUser(): UserContract
     {
+        if (!$this->user) {
+            throw new UserNotProvidedException();
+        }
+
         return $this->user;
     }
 

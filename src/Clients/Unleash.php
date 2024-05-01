@@ -19,17 +19,11 @@ use Yomafleet\FeatureFlag\Exceptions\UserNotProvidedException;
 class Unleash implements FlaggableContract
 {
     protected Client $client;
-    protected UserContract $user;
+    protected ?UserContract $user;
 
     public function __construct(?UserContract $user = null, ?Client $client = null)
     {
-        $user = $user ?? auth()->user();
-
-        if (!$user) {
-            throw new UserNotProvidedException();
-        }
-
-        $this->user = $user;
+        $this->user = $user ?? auth()->user();
         $this->client = $client ?? $this->buildClient();
     }
 
@@ -52,15 +46,46 @@ class Unleash implements FlaggableContract
     }
 
     /**
+     * Sets the user.
+     *
+     * @param UserContract $user
+     * @return static
+     */
+    public function setUser(UserContract $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @throws UserNotProvidedException
+     * @return UserContract
+     */
+    public function getUser(): UserContract
+    {
+        if (!$this->user) {
+            throw new UserNotProvidedException();
+        }
+
+        return $this->user;
+    }
+
+    /**
      * Create new user context.
      *
+     * @throws UserNotProvidedException
      * @return Context
      */
     protected function userContext(): Context
     {
+        $user = $this->getUser();
+
         return new UnleashContext(
-            currentUserId: $this->user->idKey(),
-            customContext: ['roles' => implode(',', $this->user->roleList())]
+            currentUserId: $user->idKey(),
+            customContext: ['roles' => implode(',', $user->roleList())]
         );
     }
 
