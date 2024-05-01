@@ -2,8 +2,9 @@
 
 namespace Yomafleet\FeatureFlag\Clients;
 
-use Yomafleet\FeatureFlag\FlaggableContract;
 use Illuminate\Support\Facades\Config;
+use Yomafleet\FeatureFlag\UserContract;
+use Yomafleet\FeatureFlag\FlaggableContract;
 
 class DisabledToggler implements FlaggableContract
 {
@@ -18,5 +19,11 @@ class DisabledToggler implements FlaggableContract
     public function enabled(string $key): bool
     {
         return $this->optimistic;
+    }
+
+    /** @inheritDoc */
+    public function setUser(UserContract $user)
+    {
+        return $this;
     }
 }

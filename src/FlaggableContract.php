@@ -11,4 +11,12 @@ interface FlaggableContract
      * @return boolean
      */
     public function enabled(string $key): bool;
+
+    /**
+     * Sets the user.
+     *
+     * @param UserContract $user
+     * @return static
+     */
+    public function setUser(UserContract $user);
 }
